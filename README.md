@@ -24,8 +24,26 @@ Test the C Program for the desired output.
 # PROGRAM:
 
 ## C Program to create new process using Linux API system calls fork() and getpid() , getppid() and to print process ID and parent Process ID using Linux API system calls
+```
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main() {
+    int pid = fork();
+
+    if (pid == 0) { 
+        printf("I am child, my PID is %d\n", getpid()); 
+        printf("My parent PID is: %d\n", getppid()); 
+        sleep(2);  // Keep child alive for verification
+    } else { 
+        printf("I am parent, my PID is %d\n", getpid()); 
+        wait(NULL); 
+    }
+}
 
 
+```
 
 
 
@@ -39,6 +57,7 @@ Test the C Program for the desired output.
 
 ##OUTPUT
 
+<img width="1002" height="629" alt="{C84DBC30-B460-434C-A0ED-4F189D7BEAD7}" src="https://github.com/user-attachments/assets/51c819ba-a11d-47cf-9cb2-8d36db303420" />
 
 
 
@@ -47,7 +66,50 @@ Test the C Program for the desired output.
 
 
 ## C Program to execute Linux system commands using Linux API system calls exec() , exit() , wait() family
+```
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
+int main() {
+    int status;
+    
+    printf("Running ps with execl\n");
+    if (fork() == 0) {
+        execl("ps", "ps", "-f", NULL);
+        perror("execl failed");
+        exit(1);
+    }
+    wait(&status);
+    
+    if (WIFEXITED(status)) {
+        printf("Child exited with status: %d\n", WEXITSTATUS(status));
+    } else {
+        printf("Child did not exit successfully\n");
+    }
+    
+    printf("Running ps with execlp (without full path)\n");
+    if (fork() == 0) {
+        execlp("ps", "ps", "-f", NULL);
+        perror("execlp failed");
+        exit(1);
+    }
+    wait(&status);
+    
+    if (WIFEXITED(status)) {
+        printf("Child exited for execlp with status: %d\n", WEXITSTATUS(status));
+    } else {
+        printf("Child did not exit successfully\n");
+    }
+    
+    printf("Done.\n");
+    return 0;
+}
+
+
+```
 
 
 
@@ -76,6 +138,7 @@ Test the C Program for the desired output.
 ##OUTPUT
 
 
+<img width="992" height="620" alt="{36DB0999-DA99-495F-8FAE-5D5AC0903166}" src="https://github.com/user-attachments/assets/7976ea9f-e8f9-46ea-bf1a-952fa4892b70" />
 
 
 
